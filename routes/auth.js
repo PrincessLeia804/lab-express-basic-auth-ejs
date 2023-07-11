@@ -16,8 +16,8 @@ router.get("/user-profile", (req, res) => {
 
 // POST sign-up page
 router.post("/signup", async (req, res) => {
- 
-    const payload = { ...req.body}
+
+    const payload = { ...req.body }
     console.log('payload: ', payload);
 
     // PW entered not into the DB
@@ -37,6 +37,32 @@ router.post("/signup", async (req, res) => {
 })
 
 // GET login page
+router.get("/login", (req, res) => {
+    res.render("auth/login")
+})
 
+// POST Login
+router.post("/login", async (req, res) => {
+    const { username, password } = req.body
+    // check if user exist
+    try {
+        const userExists = await User.findOne({ username: username.toLowerCase() }) // to match
+
+        if (userExists) {
+            // compare passwords
+            if (bcrypt.compareSync(password, userExists.passwordHash)) {
+                loggedUser = { ...userExists._doc } // mongoose specific: needed
+                res.redirect("/auth/user-profile")
+            }
+            else {
+                console.log("The input combination does not match any entries");
+            }
+        }else{
+            console.log("The combination does not match any entries");
+        }
+    } catch (error) {
+        console.log("An error occurred");
+    }
+})
 
 module.exports = router
