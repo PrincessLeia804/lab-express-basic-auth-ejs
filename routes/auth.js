@@ -2,16 +2,10 @@ const router = require('express').Router()
 const bcrypt = require('bcryptjs');
 const User = require('../models/User.model');
 
-
 // GET sign-up page
 router.get("/signup", (req, res) => {
     res.render("auth/signup");
-})
-
-// GET profile-page path
-router.get("/user-profile", (req, res) => {
-    res.render("auth/user-profile")
-})
+  })
 
 
 // POST sign-up page
@@ -43,6 +37,8 @@ router.get("/login", (req, res) => {
 
 // POST Login
 router.post("/login", async (req, res) => {
+    console.log('SESSION =====> ', req.session);
+
     const { username, password } = req.body
     // check if user exist
     try {
@@ -52,7 +48,11 @@ router.post("/login", async (req, res) => {
             // compare passwords
             if (bcrypt.compareSync(password, userExists.passwordHash)) {
                 loggedUser = { ...userExists._doc } // mongoose specific: needed
-                res.render("auth/user-profile", {user: loggedUser})
+                delete loggedUser.passwordHash
+
+                // save user in session
+                req.session.user = loggedUser
+                res.redirect("/user-profile")
             }
             else {
                 res.render('auth/login', {

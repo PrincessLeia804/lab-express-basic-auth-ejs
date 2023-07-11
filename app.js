@@ -11,6 +11,8 @@ const express = require('express')
 
 const app = express()
 
+require("./config/session.config")(app)
+
 // ℹ️ This function is getting exported from the config folder. It runs most middlewares
 require('./config')(app)
 
@@ -25,6 +27,7 @@ const index = require('./routes/index')
 app.use('/', index)
 
 const authPath = require('./routes/auth')
+const sessionConfig = require('./config/session.config')
 app.use('/auth', authPath)
 
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
