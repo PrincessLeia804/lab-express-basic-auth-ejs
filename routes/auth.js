@@ -52,16 +52,24 @@ router.post("/login", async (req, res) => {
             // compare passwords
             if (bcrypt.compareSync(password, userExists.passwordHash)) {
                 loggedUser = { ...userExists._doc } // mongoose specific: needed
-                res.redirect("/auth/user-profile")
+                res.render("auth/user-profile", {user: loggedUser})
             }
             else {
-                console.log("The input combination does not match any entries");
+                res.render('auth/login', {
+                    errorMessage: "The input combination does not match any entries",
+                    prevUsername: { user: userExists.username }
+                })
             }
-        }else{
-            console.log("The combination does not match any entries");
+        } else {
+            res.render('auth/login', {
+                errorMessage: "The combination does not match any entries",
+                prevUsername: { user: userExists.username }
+            })
         }
     } catch (error) {
-        console.log("An error occurred");
+        res.render('auth/login', {
+            errorMessage: "An error occurred"
+        })
     }
 })
 

@@ -3,7 +3,7 @@
 <form action="/auth/login" method="POST">
   <label>
     Username
-    <input name="username" required value="<%= typeof errorMessage !== 'undefined' ? payload.email : '' %>" />
+    <input name="username" required value="<%= typeof errorMessage !== 'undefined' ? prevUsername.username : '' %>" />
   </label>
   <label>
     Password
